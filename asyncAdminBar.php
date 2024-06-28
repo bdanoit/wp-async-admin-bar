@@ -13,14 +13,15 @@ add_action('rest_api_init', function () {
 });
 function async_admin_bar_html() {
   $user_id = apply_filters( 'determine_current_user', false );
+  if(!$user_id) return null;
   wp_set_current_user($user_id);
   $user = wp_get_current_user();
   if(!$user) return null;
-  show_admin_bar(true);
   $show_admin_bar = get_user_option('show_admin_bar_front', $user->id);
   if(!$show_admin_bar) return null;
   // show for specific user groups (todo: make this a setting)
   if( !(current_user_can('administrator') || current_user_can('seo'))) return null;
+  show_admin_bar(true);
   require_once ABSPATH . WPINC . '/class-wp-admin-bar.php';
   require_once ABSPATH . WPINC . '/functions.wp-styles.php';
   $abc = apply_filters( 'wp_admin_bar_class', 'WP_Admin_Bar' );
