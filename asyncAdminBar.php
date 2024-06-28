@@ -17,10 +17,22 @@ function async_admin_bar_html() {
   wp_set_current_user($user_id);
   $user = wp_get_current_user();
   if(!$user) return null;
+  $roles = null;
+  if(defined('WP_ASYNC_ADMIN_BAR_USER_ROLES')) {
+    $roles = WP_ASYNC_ADMIN_BAR_USER_ROLES;
+  }
+  if(is_array($roles)) {
+    $has_role = false;
+    foreach($roles as $role) {
+      if(current_user_can($role)) {
+        $has_role = true;
+        break;
+      }
+    }
+    if($has_role === false) return null;
+  }
   $show_admin_bar = get_user_option('show_admin_bar_front', $user->id);
   if(!$show_admin_bar) return null;
-  // show for specific user groups (todo: make this a setting)
-  if( !(current_user_can('administrator') || current_user_can('seo'))) return null;
   show_admin_bar(true);
   require_once ABSPATH . WPINC . '/class-wp-admin-bar.php';
   require_once ABSPATH . WPINC . '/functions.wp-styles.php';
