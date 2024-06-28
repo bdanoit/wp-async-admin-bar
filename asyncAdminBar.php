@@ -17,9 +17,9 @@ function async_admin_bar_html() {
   $user = wp_get_current_user();
   if(!$user) return null;
   show_admin_bar(true);
-  if(!$user) return null;
   $show_admin_bar = get_user_option('show_admin_bar_front', $user->id);
   if(!$show_admin_bar) return null;
+  // show for specific user groups (todo: make this a setting)
   if( !(current_user_can('administrator') || current_user_can('seo'))) return null;
   require_once ABSPATH . WPINC . '/class-wp-admin-bar.php';
   require_once ABSPATH . WPINC . '/functions.wp-styles.php';
@@ -39,9 +39,7 @@ function async_admin_bar_html() {
 if(!is_admin()) {
   add_action('init', function(){ show_admin_bar( false ); });
   add_action('wp_enqueue_scripts', function() {
-    //if(!is_user_logged_in()) return;
     wp_enqueue_script('async-admin-bar', plugins_url('assets/index.js', __FILE__ ), array(), false, array( 'strategy' => 'async' ) );
-    //wp_localize_script('async-admin-bar', 'nonce', wp_create_nonce('wp_rest'));
   });
 }
 ?>
